@@ -1,0 +1,169 @@
+#include"pch.h"
+#include "RfTextStyle.h"
+#include"RfWriteFactory.h"
+//converter
+//---------------------------------directwrite
+static DWRITE_FONT_WEIGHT TO_WRITE_WEIGHT(RfTxtWeight weight)
+{
+	switch (weight)
+	{
+	case RfTxtWeight::THIN:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_THIN;
+	case RfTxtWeight::EXTRA_LIGHT:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_EXTRA_LIGHT;;
+	case RfTxtWeight::LIGHT:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_LIGHT;;
+	case RfTxtWeight::NORMAL:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_NORMAL;;
+	case RfTxtWeight::REGULAR:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_REGULAR;;
+	case RfTxtWeight::MEDIUM:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM;;
+	case RfTxtWeight::BOLD:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_BOLD;;
+	case RfTxtWeight::BLACK:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_BLACK;;
+	case RfTxtWeight::HEAVY:
+		return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_HEAVY;;
+	}
+	return DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_NORMAL;;
+}
+static DWRITE_FONT_STYLE  TO_WRITE_STYLE(RfTxtStyle style)
+{
+	switch (style)
+	{
+	case RfTxtStyle::NORMAL:
+		return DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL;
+	case RfTxtStyle::OBLIQUE:
+		return DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_OBLIQUE;
+	case RfTxtStyle::ITALIC:
+		return DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_ITALIC;
+	}
+	return DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL;
+
+}
+
+static DWRITE_FONT_STRETCH   TO_WRITE_STRETCH(RfTxtStretch stretch)
+{
+	switch (stretch)
+	{
+	case RfTxtStretch::CONDENSED:
+		return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_CONDENSED;
+	case RfTxtStretch::NORMAL:
+		return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL;
+	case RfTxtStretch::MEDIUM:
+		return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_MEDIUM;
+	case RfTxtStretch::EXPANDED:
+		return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_EXPANDED;
+	case RfTxtStretch::EXTRA_EXPANDED:
+		return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_EXTRA_EXPANDED;
+	}
+	return DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL;
+
+
+}
+static DWRITE_FLOW_DIRECTION   TO_WRITE_FlowDir(RfTxtFlowDir dir)
+{
+	switch (dir)
+	{
+	case RfTxtFlowDir::T_B:
+		return DWRITE_FLOW_DIRECTION::DWRITE_FLOW_DIRECTION_TOP_TO_BOTTOM;
+	case RfTxtFlowDir::B_T:
+		return DWRITE_FLOW_DIRECTION::DWRITE_FLOW_DIRECTION_BOTTOM_TO_TOP;
+	case RfTxtFlowDir::L_R:
+		return DWRITE_FLOW_DIRECTION::DWRITE_FLOW_DIRECTION_LEFT_TO_RIGHT;
+	case RfTxtFlowDir::R_L:
+		return DWRITE_FLOW_DIRECTION::DWRITE_FLOW_DIRECTION_RIGHT_TO_LEFT;
+	}
+	return DWRITE_FLOW_DIRECTION::DWRITE_FLOW_DIRECTION_LEFT_TO_RIGHT;
+
+
+}
+static DWRITE_PARAGRAPH_ALIGNMENT  TO_WRITE_ParaAlign(RfTxtParaAlign align)
+{
+	switch (align)
+	{
+	case RfTxtParaAlign::ALIGN_NEAR:
+		return DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+	case RfTxtParaAlign::ALIGN_FAR:
+		return DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_FAR;
+	case RfTxtParaAlign::ALIGN_CENTER:
+		return DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	}
+	return DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+}
+static DWRITE_READING_DIRECTION   TO_WRITE_ReadDir(RfTxtReadDir dir)
+{
+	switch (dir)
+	{
+	case RfTxtReadDir::L_R:
+		return DWRITE_READING_DIRECTION::DWRITE_READING_DIRECTION_LEFT_TO_RIGHT;
+	case RfTxtReadDir::R_L:
+		return DWRITE_READING_DIRECTION::DWRITE_READING_DIRECTION_RIGHT_TO_LEFT;
+	case RfTxtReadDir::T_B:
+		return DWRITE_READING_DIRECTION::DWRITE_READING_DIRECTION_TOP_TO_BOTTOM;
+	case RfTxtReadDir::B_T:
+		return DWRITE_READING_DIRECTION::DWRITE_READING_DIRECTION_BOTTOM_TO_TOP;
+	}
+	return DWRITE_READING_DIRECTION::DWRITE_READING_DIRECTION_LEFT_TO_RIGHT;
+}
+static DWRITE_TEXT_ALIGNMENT TO_WRITE_TextAlign(RfTxtTextAlign align)
+{
+	switch (align)
+	{
+	case RfTxtTextAlign::ALIGN_LEAD:
+		return DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
+	case RfTxtTextAlign::ALIGN_TRAIL:
+		return DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_TRAILING;
+	case RfTxtTextAlign::ALIGN_CENTER:
+		return DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER;
+	case RfTxtTextAlign::ALIGN_JUSTIFIED:
+		return DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_JUSTIFIED;
+	}
+	return  DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
+}
+static DWRITE_WORD_WRAPPING  TO_WRITE_WordWrap(RfTxtWordWrap wrap)
+{
+	switch (wrap)
+	{
+	case RfTxtWordWrap::WRAP:
+		return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_WRAP;
+	case RfTxtWordWrap::NO_WRAP:
+		return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_NO_WRAP;
+	case RfTxtWordWrap::EMERGENCY_BREAK:
+		return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_EMERGENCY_BREAK;
+	case RfTxtWordWrap::WHOLE_WORD:
+		return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_WHOLE_WORD;
+	case RfTxtWordWrap::CHARACTER:
+		return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_CHARACTER;
+	}
+	return DWRITE_WORD_WRAPPING::DWRITE_WORD_WRAPPING_WRAP;
+}
+#define WRITE_FACTORY ((IDWriteFactory*)RfWriteFactory::n_factory)
+void* RfTextStyle::Native()
+{
+	IDWriteTextFormat* fff=nullptr;
+	WRITE_FACTORY->CreateTextFormat(
+		familyName,
+		nullptr,
+		TO_WRITE_WEIGHT(weight),
+		TO_WRITE_STYLE(style),
+		TO_WRITE_STRETCH(stretch),
+		size,
+		localFontName,
+		&fff
+	);
+	if (fff)
+	{
+		fff->SetFlowDirection(TO_WRITE_FlowDir(flowDir));
+		fff->SetWordWrapping(TO_WRITE_WordWrap(wordWrap));
+		fff->SetParagraphAlignment(TO_WRITE_ParaAlign(paraAlign));
+		fff->SetReadingDirection(TO_WRITE_ReadDir(readDir));
+		fff->SetTextAlignment(TO_WRITE_TextAlign(align));
+	}
+	else
+	{
+		std::cout << "RfTextStyle::Native() null\n";
+	}
+    return fff;
+}
