@@ -1,8 +1,7 @@
 #pragma once
-
+#include"pch.h"
 #include<RfBaseWindow.h>
 #include<RfD2HWNDRender.h>
-#include"pch.h"
 class RfView;
 class RfLayout;
 class RfGUIWindow:public RfBaseWindow

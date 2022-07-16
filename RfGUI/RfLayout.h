@@ -16,7 +16,7 @@ public:
 		
 	};
     RfLayout(Context ctx);
-    void AddView(RfView* view,LayoutParams lparam) ;
+    void AddView(RfView* view,LayoutParams *lparam) ;
     void RemoveView(RfView* view);
     void RemoveViewAt(int index);
 protected:

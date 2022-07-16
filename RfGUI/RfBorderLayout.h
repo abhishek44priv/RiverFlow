@@ -12,12 +12,12 @@ class RfBorderLayout :
     public RfLayout
 {
 public:
-	struct LayoutParams:public RfLayout::LayoutParams
+	struct BorderLayoutParams:public LayoutParams
 	{
 		int dir=DIR_NORTH;
 	};
 	RfBorderLayout(Context ctx);
-	void AddView(RfView* view, LayoutParams lparam);
+	void AddView(RfView* view, LayoutParams* lparam);
 protected:
 	virtual void OnMeasure(MeasureEvent e)override;
 	virtual void OnLayout(LayoutEvent e)override;

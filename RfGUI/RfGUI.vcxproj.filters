@@ -36,6 +36,24 @@
     <ClInclude Include="RfBorderLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RfLinearLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RfScrollView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RfWinView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RfImageView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RfCanvasView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RfSwitch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -57,6 +75,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RfBorderLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfLinearLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfScrollView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfWinView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfImageView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfCanvasView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RfSwitch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

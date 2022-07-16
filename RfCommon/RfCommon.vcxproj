@@ -146,6 +146,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RfColor.h" />
     <ClInclude Include="RfConsole.h" />
+    <ClInclude Include="RfImage.h" />
     <ClInclude Include="RfMath.h" />
     <ClInclude Include="RfPoint.h" />
     <ClInclude Include="RfPreciseTime.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="RfSTLHelper.h" />
     <ClInclude Include="RfTimer.h" />
     <ClInclude Include="RfVector2.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -165,6 +167,7 @@
     </ClCompile>
     <ClCompile Include="RfColor.cpp" />
     <ClCompile Include="RfConsole.cpp" />
+    <ClCompile Include="RfImage.cpp" />
     <ClCompile Include="RfMath.cpp" />
     <ClCompile Include="RfPoint.cpp" />
     <ClCompile Include="RfPreciseTime.cpp" />

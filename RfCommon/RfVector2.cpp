@@ -8,6 +8,12 @@ RfVector2::RfVector2(float x, float y)
 {
 }
 
+void RfVector2::Plus(RfVector2 p)
+{
+	x += p.x;
+	y += p.y;
+}
+
 void RfVector2::Set(float x, float y)
 {
 	this->x = x;

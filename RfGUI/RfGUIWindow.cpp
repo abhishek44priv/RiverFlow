@@ -35,7 +35,6 @@ void RfGUIWindow::OnPaint(RfPaintParams e)
 		//dirty check
 		if (e.dirtyRect.IntersectsWith({ vw->x,vw->y,clip.width,clip.height }))
 		{
-			
 			if (clip.IntersectsWith({ 0,0,(float)GetWidth(),(float)GetHeight() }))
 			{
 				RfRect drect;
@@ -56,10 +55,10 @@ void RfGUIWindow::OnPaint(RfPaintParams e)
 void RfGUIWindow::OnMouseMove(RfMouseEvent& e)
 {
 	RfView::MouseEvent ee{ e.x,e.y };
+	ee.isMouseDown = IsMouseDown();
 	if (mouseCaptureView)
 	{
 		auto sr = mouseCaptureView->GetScreenRect();
-		
 		ee.x = e.x - (int)sr.x;
 		ee.y = e.y - (int)sr.y;
 		mouseCaptureView->OnMouseMove(ee);
@@ -86,6 +85,7 @@ void RfGUIWindow::OnMouseMove(RfMouseEvent& e)
 	{
 		mouseEnterView->OnMouseExit();
 		mouseEnterView = nullptr;
+
 	}
 }
 
@@ -105,6 +105,16 @@ void RfGUIWindow::OnMouseExit()
 
 void RfGUIWindow::OnMouseUp(RfMouseEvent& e)
 {
+	if (mouseCaptureView)
+	{
+		RfView::MouseEvent ee{ e.x,e.y };
+
+		auto sr = mouseCaptureView->GetScreenRect();
+		ee.x = e.x - (int)sr.x;
+		ee.y = e.y - (int)sr.y;
+		mouseCaptureView->OnMouseUp(ee);
+		return;
+	}
 	RfPoint pt = { (float)e.x,(float)e.y };
 	RfView::MouseEvent ee{ e.x,e.y };
 	for (int i = childs.size() - 1; i >= 0; i--)
@@ -116,6 +126,8 @@ void RfGUIWindow::OnMouseUp(RfMouseEvent& e)
 		if (res)
 		{
 			v->OnMouseUp(ee);
+			return;
+
 		}
 	}
 }
@@ -133,6 +145,7 @@ void RfGUIWindow::OnMouseDown(RfMouseEvent& e)
 		if (res)
 		{
 			v->OnMouseDown(ee);
+			return;
 		}
 	}
 }
@@ -146,6 +159,13 @@ void RfGUIWindow::OnMouseWheel(RfMouseEvent& e)
 		auto v = childs[i];
 		ee.x = e.x - (int)v->x;
 		ee.y = e.y - (int)v->y;
+		if (e.delta == e.SCROLL_DOWN) {
+			ee.scollDir = -1;
+		}
+		if (e.delta == e.SCROLL_UP)
+		{
+			ee.scollDir = 1;
+		}
 		bool res = v->GetLocalRect().Contains(pt);
 		if (res)
 		{
@@ -215,26 +235,28 @@ void RfGUIWindow::OnMeasure()
 	for (size_t i = 0; i < childs.size(); i++)
 	{
 		auto v = childs[i];
-		RfView::MeasureEvent e;
-		if (i == 0) 
-		{
-			v->x = v->margin.l;
-			v->y = v->margin.t;
-			v->measuredWidth = (float)GetWidth() - 
-				(v->margin.l+ v->margin.r);
-			v->measuredHeight = (float)GetHeight() -
-				(v->margin.t + v->margin.b);
-			e.width = SIZE_MATCH;
-			e.height = SIZE_MATCH;
-		}
+		RfView::MeasureEvent e{};
+		if (v->width == SIZE_MATCH)
+			v->measuredWidth = (float)GetWidth();
+
+		if (v->height == SIZE_MATCH)
+			v->measuredHeight = (float)GetHeight();
+
 		v->OnMeasure(e);
 	}
 }
 
 void RfGUIWindow::OnLayout()
 {
-    for (auto v : childs)
+	for (size_t i = 0; i < childs.size(); i++)
     {
+		auto v = childs[i];
+		/*if (i == 0)
+		{
+			v->x = v->margin.l;
+			v->y = v->margin.t;
+		}*/
+			
         v->OnLayout({});
     }
 }

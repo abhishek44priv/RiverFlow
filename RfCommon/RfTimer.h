@@ -7,7 +7,7 @@ class RfTimer
 		{
 			unsigned int millsecond;
 		};
-		RfTimer(int millSeconds, std::function<void(TimerEvent& e)> callback);
+		RfTimer(int millSeconds, std::function<void(TimerEvent e)> callback);
 		void StopForIteration(int iteration);
 		bool IsStop();
 		void Stop();

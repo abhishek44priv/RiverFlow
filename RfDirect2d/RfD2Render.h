@@ -4,6 +4,7 @@
 #include"RfD2Style.h"
 #include"RfTextLayout.h"
 class RfD2Brush;
+class RfD2Bitmap;
 class RfD2Render
 {
 public:
@@ -55,7 +56,7 @@ public:
 		RfTextStyle txtStyle = {},RfColor color=RfColor::Black);
 	void DrawTextLayout(RfTextLayout& txtLayout, RfPoint xy, RfColor color = RfColor::Black);
 	//image
-
+	void DrawBitmap(RfD2Bitmap *bitmap,RfRect rect);
 	void Begin();
 	void End();
 	void Clear(RfColor color, RfRect rect = {});

@@ -6,7 +6,7 @@ struct RfTimer::Opaque
 	int m_stopIteration = 100000000;
 	bool m_isStop = false;
 	int _millSeconds = 0;
-	std::function<void(TimerEvent& e)> _callback;
+	std::function<void(TimerEvent e)> _callback;
 	unsigned int m_id = 0;
 };
 struct _TimerInfo
@@ -38,9 +38,9 @@ public:
 };
 
 
-RfTimer::RfTimer(int millSeconds, std::function<void(TimerEvent& e)> callback)
+RfTimer::RfTimer(int millSeconds, std::function<void(TimerEvent e)> callback)
 {
-	opaque = new Opaque;
+	opaque = new Opaque();
 	opaque->_millSeconds = millSeconds;
 	opaque->_callback = callback;
 	opaque->m_id = (unsigned int)SetTimer(

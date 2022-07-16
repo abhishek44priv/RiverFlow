@@ -2,6 +2,14 @@
 #include"RfGUIWindow.h"
 #include "RfView.h"
 
+void RfView::NullMouseEnterView()
+{
+	if (ctx.guiwindow->mouseEnterView)
+	{
+		ctx.guiwindow->mouseEnterView = nullptr;
+	}
+}
+
 RfView::RfView(Context ctx)
 {
 	this->ctx = ctx;
@@ -13,7 +21,7 @@ RfView::~RfView()
 
 void RfView::SetWidth(int width)
 {
-	if(width==SIZE_FIXED)
+	if(width>=0)
 	{
 		this->width = SIZE_FIXED;
 		this->measuredWidth = (float)width;
@@ -27,7 +35,7 @@ void RfView::SetWidth(int width)
 
 void RfView::SetHeight(int height)
 {
-	if(height==SIZE_FIXED)
+	if(height>=0)
 	{
 		this->height = SIZE_FIXED;
 		this->measuredHeight = (float)height;
@@ -69,15 +77,12 @@ void RfView::Layout(LayoutEvent e)
 	OnLayout(e);
 }
 
-
-
-
-
 void RfView::Repaint()
 {
 	auto srn = GetScreenRect();
 	auto clip = GetClipRect();
-	this->ctx.guiwindow->Repaint({ srn.x+(x<0?-x:0), srn.y+(y < 0 ? -y : 0), clip.width, clip.height});
+	//this->ctx.guiwindow->Repaint({ srn.x + (x < 0 ? -x : 0), srn.y + (y < 0 ? -y : 0), clip.width, clip.height });
+	this->ctx.guiwindow->Repaint(srn);
 }
 
 RfRect RfView::GetLocalRect()
@@ -118,9 +123,40 @@ RfRect RfView::GetScreenRect()
 	return RfRect(xy.x, xy.y, this->measuredWidth, this->measuredHeight);
 }
 
+RfD2Render* RfView::GetD2Render()
+{
+	return ctx.guiwindow->hwndRender;
+}
+
 void RfView::SetParent(RfView* p)
 {
 	this->parent = p;
+}
+
+void RfView::SetLayoutParams(void* lparam)
+{
+	this->lparam = lparam;
+}
+
+void RfView::CaptureMouse()
+{
+	ctx.guiwindow->mouseCaptureView = this;
+	ctx.guiwindow->CaptureMouse();
+}
+
+void RfView::ReleaseMouseCapture()
+{
+	ctx.guiwindow->mouseCaptureView = nullptr;
+	ctx.guiwindow->ReleaseMouseCapture();
+}
+
+void RfView::OnPageScroll(float ratio)
+{
+}
+
+RfSize RfView::GetScrollSize()
+{
+	return RfSize(measuredWidth,measuredHeight);
 }
 
 void RfView::OnVisibility(bool isVisible)
@@ -150,10 +186,14 @@ void RfView::OnDraw(DrawEvent e)
 
 void RfView::OnMouseEnter()
 {
+	borderColor = borderColor.rgba & 0xffffff88;
+	Repaint();
 }
 
 void RfView::OnMouseExit()
 {
+	borderColor = borderColor.rgba | 0x000000ff;
+	Repaint();
 }
 
 void RfView::OnMouseUp(MouseEvent e)

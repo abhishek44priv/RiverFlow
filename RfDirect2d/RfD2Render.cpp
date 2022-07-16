@@ -1,6 +1,7 @@
 #include"pch.h"
 #include "RfD2Render.h"
 #include"RfD2Brush.h"
+#include"RfD2Bitmap.h"
 #define D2_RENDER ((ID2D1RenderTarget*)info.n_d2Render)
 #define _D2Rect(r) RectF(r.x+info.offset.x,r.y+info.offset.y,r.x+r.width+info.offset.x,r.y+r.height+info.offset.y)
 
@@ -59,7 +60,7 @@ void RfD2Render::ResetOffset()
 void RfD2Render::PushClipRect(RfRect rect)
 {
 	D2_RENDER->PushAxisAlignedClip(_D2Rect(rect),
-		D2D1_ANTIALIAS_MODE_ALIASED);
+		D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
 }
 
 void RfD2Render::PopClipRect()
@@ -126,7 +127,7 @@ void RfD2Render::FillEllipse(RfPoint center, float xRad, float yRad, RfColor col
 {
 	auto brush =
 		CreateSolidBrush(D2_RENDER, _D2ColorF(color));
-	D2_RENDER->DrawEllipse(Ellipse(
+	D2_RENDER->FillEllipse(Ellipse(
 		_PointF(center), xRad, yRad
 	), brush.Get());
 }
@@ -236,6 +237,12 @@ void RfD2Render::DrawTextLayout(RfTextLayout& txtLayout, RfPoint xy, RfColor col
 
 }
 
+
+void RfD2Render::DrawBitmap(RfD2Bitmap* bitmap, RfRect rect)
+{
+	auto dbitmap = (ID2D1Bitmap*)bitmap->GetNative();
+	D2_RENDER->DrawBitmap(dbitmap, _D2Rect(rect));
+}
 
 void RfD2Render::Begin()
 {

@@ -1,16 +1,19 @@
 #include "pch.h"
 #include "RfLayout.h"
 #include"RfGUIWindow.h"
+#include"RfWidget.h"
 RfLayout::RfLayout(Context ctx)
 	:RfView(ctx)
 {
+	bgColor = RfRandom::RangeInt(RfColor::Red, RfColor::Blue) | 0x000000ff;
+	d_name = "layout";
 }
 
-void RfLayout::AddView(RfView* view, LayoutParams lparam)
+void RfLayout::AddView(RfView* view, LayoutParams *lparam)
 {
 	view->parent = this;
 	childs.push_back(view);
-	lparams.push_back(new LayoutParams(lparam));
+	view->lparam = lparam;
 	//measure layout repaint
 }
 
@@ -25,10 +28,16 @@ void RfLayout::RemoveViewAt(int index)
 
 void RfLayout::OnMeasure(MeasureEvent e)
 {
+	for (auto c : childs) {
+		c->Measure(e);
+	}
 }
 
 void RfLayout::OnLayout(LayoutEvent e)
 {
+	for (auto c : childs) {
+		c->Layout(e);
+	}
 }
 
 void RfLayout::OnSize(SizeEvent e)
@@ -37,14 +46,18 @@ void RfLayout::OnSize(SizeEvent e)
 
 void RfLayout::OnDraw(DrawEvent e)
 {
+	e.render->PushClipRect({ 0,0,measuredWidth,measuredHeight });
 	RfView::OnDraw(e);
 	OnDrawChilds(e);
+	//border
+	//e.render->DrawRect({ 0,0,measuredWidth,measuredHeight }, borderColor,1.5f);
+	e.render->PopClipRect();
 }
 
 void RfLayout::OnDrawChilds(DrawEvent e)
 {
 	auto off = e.render->GetOffset();
-	auto lcDirRec = RfRect(e.clipRect.x-x,e.clipRect.y-y,e.clipRect.width,e.clipRect.height);
+	auto lcDirRec = RfRect(e.clipRect.x-off.x,e.clipRect.y-off.y,e.clipRect.width,e.clipRect.height);
 	for (auto c : childs)
 	{
 		if (lcDirRec.IntersectsWith(c->GetLocalRect()))
@@ -59,11 +72,14 @@ void RfLayout::OnDrawChilds(DrawEvent e)
 
 void RfLayout::OnMouseEnter()
 {
+	borderColor = borderColor.rgba & 0xffffff88;
+	//Repaint();
 }
 
 void RfLayout::OnMouseExit()
 {
-
+	borderColor = borderColor.rgba | 0x000000ff;
+	//Repaint();
 }
 
 void RfLayout::OnMouseUp(MouseEvent e)
@@ -110,31 +126,48 @@ void RfLayout::OnMouseMove(MouseEvent e)
 	{
 		auto v = childs[i];
 		bool res = v->GetLocalRect().Contains(pt);
-		ee.x = e.x - (int)v->x;
-		ee.y = e.y - (int)v->y;
 		if (res)
 		{
-			if (mouseEnterView != v)
+			ee.x = e.x - (int)v->x;
+			ee.y = e.y - (int)v->y;
+			
+			if (mouseEnterView == this)
 			{
 				mouseEnterView->OnMouseExit();
 				mouseEnterView = v;
-				mouseEnterView->OnMouseEnter();
+				v->OnMouseEnter();
 			}
-			else v->OnMouseMove(ee);
+			else
+			{
+				auto widget = dynamic_cast<RfWidget*>(v);
+				if (widget)
+				{
+					if (mouseEnterView != v)
+					{
+						mouseEnterView->OnMouseExit();
+						mouseEnterView = v;
+						v->OnMouseEnter();
+						return;
+					}
+
+				}
+				v->OnMouseMove(ee);
+			}
 			return;
 		}
 	}
 	if (mouseEnterView != this)
 	{
 		mouseEnterView->OnMouseExit();
-		mouseEnterView = nullptr;
+		mouseEnterView = this;
+		OnMouseEnter();
 	}
 }
 
 void RfLayout::OnMouseScroll(MouseEvent e)
 {
 	RfPoint pt = { (float)e.x,(float)e.y };
-	RfView::MouseEvent ee{ e.x,e.y };
+	RfView::MouseEvent ee = e;
 	for (int i = childs.size() - 1; i >= 0; i--)
 	{
 		auto v = childs[i];

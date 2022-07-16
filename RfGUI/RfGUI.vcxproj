@@ -149,11 +149,17 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="RfBorderLayout.h" />
+    <ClInclude Include="RfCanvasView.h" />
     <ClInclude Include="RfGUIWindow.h" />
+    <ClInclude Include="RfImageView.h" />
     <ClInclude Include="RfLayout.h" />
+    <ClInclude Include="RfLinearLayout.h" />
+    <ClInclude Include="RfScrollView.h" />
+    <ClInclude Include="RfSwitch.h" />
     <ClInclude Include="RfTextView.h" />
     <ClInclude Include="RfView.h" />
     <ClInclude Include="RfWidget.h" />
+    <ClInclude Include="RfWinView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -163,11 +169,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RfBorderLayout.cpp" />
+    <ClCompile Include="RfCanvasView.cpp" />
     <ClCompile Include="RfGUIWindow.cpp" />
+    <ClCompile Include="RfImageView.cpp" />
     <ClCompile Include="RfLayout.cpp" />
+    <ClCompile Include="RfLinearLayout.cpp" />
+    <ClCompile Include="RfScrollView.cpp" />
+    <ClCompile Include="RfSwitch.cpp" />
     <ClCompile Include="RfTextView.cpp" />
     <ClCompile Include="RfView.cpp" />
     <ClCompile Include="RfWidget.cpp" />
+    <ClCompile Include="RfWinView.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

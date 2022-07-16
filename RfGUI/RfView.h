@@ -1,7 +1,6 @@
 #pragma once
 #include<RfColor.h>
 #include<RfD2Render.h>
-
 class RfGUIWindow;
 struct RfLTRB
 {
@@ -15,11 +14,13 @@ struct RfLTRB
 };
 enum
 {
-	SIZE_MATCH = -10, SIZE_WRAP, SIZE_FIXED
+	SIZE_MATCH=-10 , SIZE_WRAP, SIZE_FIXED,
+	O_HORIZONTAL,
+	O_VERTICAL
 };
 class RfView
 {
-	
+	void NullMouseEnterView();
 public:
 	
 	struct MeasureEvent { int width, height; };
@@ -30,8 +31,10 @@ public:
 		RfRect clipRect{};
 	};
 	struct MouseEvent {
-		int x=0, y=0;
-		bool isDown = false;
+		float x=0, y=0;
+		int scollDir = 0;
+		bool isMouseDown = false;
+
 	};
 	struct KeyEvent {};
 	struct Context
@@ -43,9 +46,15 @@ public:
 	int width=0,height=0;
 	float measuredWidth = 0, measuredHeight = 0;
 	RfColor bgColor = RfColor::Aqua;
+	RfColor borderColor = RfColor::Black;
+
 	Context ctx;
 	RfView* parent = nullptr;
 	RfLTRB pad,margin;
+	float scrollX = 0, scrollY = 0;
+	float pageWidth = 0.0f, pageHeight = 0.0f;
+	std::string d_name="view";
+	void* lparam = nullptr;
 public:
 	RfView(Context ctx);
 	~RfView();
@@ -63,8 +72,17 @@ public:
 	RfRect GetClipRect();
 	RfRect GetScreenRect();
 
-	void SetParent(RfView* p);
+	RfD2Render* GetD2Render();
+	inline float MW() { return measuredWidth; };
+	inline float MH(){ return measuredHeight; };
 
+	virtual RfSize GetScrollSize();
+	void SetParent(RfView* p);
+	void SetLayoutParams(void* lparam);
+	void CaptureMouse();
+	void ReleaseMouseCapture();
+
+	virtual void OnPageScroll(float ratio);
 protected:
 	virtual void OnVisibility(bool isVisible);
 	virtual void OnMeasure(MeasureEvent e);

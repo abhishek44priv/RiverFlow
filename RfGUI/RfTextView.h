@@ -5,19 +5,21 @@ class RfTextView :
 {
 public:
 	RfTextView(Context ctx);
-	RfTextView(Context ctx, const wchar_t* text);
+	RfTextView(Context ctx, std::wstring text);
 protected:
-	virtual void OnMeasure(MeasureEvent e);
-	virtual void OnDraw(DrawEvent e);
+	virtual void OnMeasure(MeasureEvent e)override;
+	virtual void OnDraw(DrawEvent e)override;
 	//mouse
-	virtual void OnMouseEnter();
-	virtual void OnMouseExit();
-	virtual void OnMouseUp(MouseEvent e);
-	virtual void OnMouseDown(MouseEvent e);
-	virtual void OnMouseMove(MouseEvent e);
-	virtual void OnMouseScroll(MouseEvent e);
+	virtual void OnMouseEnter()override;
+	virtual void OnMouseExit()override;
+	virtual void OnMouseUp(MouseEvent e)override;
+	virtual void OnMouseDown(MouseEvent e)override;
+	virtual void OnMouseMove(MouseEvent e)override;
+	virtual void OnMouseScroll(MouseEvent e)override;
 public:
-	const wchar_t* text = L"RfWidget";
+	std::wstring text = L"RfWidget";
 	RfTextStyle textStyle;
+	bool isMeasureNeeded = true;
+	RfColor textColor = RfColor::Black;
 };
 

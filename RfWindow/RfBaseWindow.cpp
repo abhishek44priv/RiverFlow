@@ -267,9 +267,14 @@ public:
 					e.delta = RfMouseEvent::SCROLL_UP;
 				if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
 					e.delta = RfMouseEvent::SCROLL_DOWN;
-				e.x = GET_X_LPARAM(lParam);
-				e.y = GET_Y_LPARAM(lParam);
+				POINT screenpt;
+				screenpt.x = GET_X_LPARAM(lParam);
+				screenpt.y= GET_Y_LPARAM(lParam);
+				::ScreenToClient(hwnd, &screenpt);
+				e.x = screenpt.x;
+				e.y = screenpt.y;
 				win->OnMouseWheel(e);
+
 				return 0;
 			}
 			case WM_SIZE:
@@ -345,7 +350,7 @@ RfBaseWindow::RfBaseWindow(InitParams params)
 
 		wc.lpszClassName = classname;
 		wc.hCursor = LoadCursor(0, IDC_ARROW);
-		wc.style = CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS | (params.isDC? CS_OWNDC:0);
+		wc.style = CS_HREDRAW|CS_VREDRAW | (params.isDC? CS_OWNDC:0);
 		::RegisterClass(&wc);
 
 		HWND parentHWND = NULL;

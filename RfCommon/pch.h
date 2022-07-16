@@ -19,5 +19,9 @@
 #include<Windows.h>
 #include<vector>
 #include<iostream>
-
+#include<format>
+#include<iostream>
+#define repeat_for(t) for(int i=0;i<t;i++)
+#define _W(n) std::to_wstring(n)
+#define print std::cout<<std::format
 #endif //PCH_H
